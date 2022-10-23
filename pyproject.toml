@@ -6,15 +6,11 @@ strict_optional = false
 [[tool.mypy.overrides]]
 ignore_missing_imports = true
 module = [
-  "numpy",
   "tqdm",
   "sqlitedict",
   "dill",
-  "tqdm.auto",
-  "accelerate",
-  "accelerate.utils.modeling",
-  "transformers",
-  "cohere",
+  "requests",
+  "redis"
 ]
 
 [tool.isort]
