@@ -1,15 +1,13 @@
 """Cohere client."""
 
-import json
 import logging
 import os
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
-import cohere
+import requests
 
 from manifest.clients import Client
 
-logging.getLogger("cohere").setLevel(logging.WARNING)
 logger = logging.getLogger(__name__)
 
 COHERE_MODELS = {"small", "medium", "large", "xlarge"}
@@ -53,7 +51,8 @@ class CohereClient(Client):
                 "Cohere API key not set. Set COHERE_API_KEY environment "
                 "variable or pass through `connection_str`."
             )
-        self.co = cohere.Client(api_key)
+        self.api_key = api_key
+        self.host = "https://api.cohere.ai"
         for key in COHERE_PARAMS:
             setattr(self, key, client_args.pop(key, COHERE_PARAMS[key][1]))
         if getattr(self, "model") not in COHERE_MODELS:
@@ -104,19 +103,19 @@ class CohereClient(Client):
                 key, getattr(self, key)
             )
 
-        def _run_generation() -> Dict:
-            try:
-                response = self.co.generate(**request_params)
-                return json.loads(
-                    json.dumps(
-                        response, default=lambda o: getattr(o, "__dict__", str(o))
-                    )
-                )
-            except cohere.CohereError as e:
-                logger.error(e)
-                raise e
+        def _run_completion() -> Dict:
+            post_str = self.host + "/completions"
+            res = requests.post(
+                post_str,
+                headers={
+                    "Authorization": f"Bearer {self.api_key}",
+                    "Cohere-Version": "2021-11-08",
+                },
+                json=request_params,
+            )
+            return res.json()
 
-        return _run_generation, request_params
+        return _run_completion, request_params
 
     def get_choice_logit_request(
         self, query: str, gold_choices: List[str], request_args: Dict[str, Any] = {}
