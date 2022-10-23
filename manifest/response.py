@@ -49,7 +49,7 @@ class Response:
         """Get response dict without parsing."""
         return self._response
 
-    def get_response(self, stop_token: str = "") -> Union[str, List[str]]:
+    def get_response(self, stop_token: str = "") -> Union[str, List[str], None]:
         """
         Get all text results from response.
 
@@ -177,7 +177,7 @@ class CohereResponse(Response):
         self._cached = cached
         self._request_params = request_params
 
-    def get_response(self, stop_token: str = "") -> Union[str, List[str]]:
+    def get_response(self, stop_token: str = "") -> Union[str, List[str], None]:
         """
         Get all text results from response.
 

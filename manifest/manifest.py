@@ -86,9 +86,9 @@ class Manifest:
         self.client = CLIENT_CONSTRUCTORS[client_name](  # type: ignore
             client_connection, client_args=kwargs
         )
-        if session_id is not None:
+        if session_id:
             if session_id == "_default":
-                session_id = None
+                self.session = None
             self.session = Session(session_id)
         else:
             self.session = None
@@ -168,6 +168,7 @@ class Manifest:
         prompt: Prompt,
         input: Optional[Iterable[Any]] = None,
         gold_choices: Optional[List[str]] = None,
+        force_rerun: bool = False,
         overwrite_cache: bool = False,
         stop_token: Optional[str] = None,
         return_response: bool = False,
@@ -202,6 +203,7 @@ class Manifest:
                 inp,
                 gold_choices,
                 overwrite_cache,
+                force_rerun,
                 stop_token,
                 return_response,
                 **kwargs,

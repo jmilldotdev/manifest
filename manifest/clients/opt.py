@@ -4,7 +4,7 @@ from typing import Any, Callable, Dict, List, Optional, Tuple
 
 import requests
 
-from manifest.clients.client import Client
+from manifest.clients import Client
 
 logger = logging.getLogger(__name__)
 
@@ -32,6 +32,8 @@ class OPTClient(Client):
             connection_str: connection string.
             client_args: client arguments.
         """
+        if not connection_str:
+            raise ValueError("Must provide connection string")
         self.host = connection_str.rstrip("/")
         for key in OPT_PARAMS:
             setattr(self, key, client_args.pop(key, OPT_PARAMS[key][1]))

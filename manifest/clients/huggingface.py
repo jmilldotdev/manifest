@@ -4,7 +4,7 @@ from typing import Any, Callable, Dict, List, Optional, Tuple
 
 import requests
 
-from manifest.clients.client import Client
+from manifest.clients import Client
 
 logger = logging.getLogger(__name__)
 
@@ -35,6 +35,8 @@ class HuggingFaceClient(Client):
             connection_str: connection string.
             client_args: client arguments.
         """
+        if not connection_str:
+            raise ValueError("Must provide connection string")
         self.host = connection_str.rstrip("/")
         for key in HF_PARAMS:
             setattr(self, key, client_args.pop(key, HF_PARAMS[key][1]))
