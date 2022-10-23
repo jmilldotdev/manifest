@@ -104,7 +104,7 @@ class CohereClient(Client):
             )
 
         def _run_completion() -> Dict:
-            post_str = self.host + "/completions"
+            post_str = self.host + "/generate"
             res = requests.post(
                 post_str,
                 headers={
